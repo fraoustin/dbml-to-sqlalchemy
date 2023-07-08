@@ -6,21 +6,15 @@ generate Model Class SqlAlchemy from database model dbml
 ## Installation
 
 
-::
-
     pip install dbml-to-sqlalchemy
         
 Or
-
-::
 
     git clone https://github.com/fraoustin/dbml-to-sqlalchemy.git
     cd dbml-to-sqlalchemy
     python setup.py install
 
 You can load test by
-
-::
 
     flake8 --ignore E501,E226,E128,F401
     python -m unittest discover -s tests
@@ -33,19 +27,14 @@ for sqlalchemy only
     import os
     from re import sub
     import sqlalchemy as db
+    from sqlalchemy.orm import Session
     from pydbml import PyDBML
 
     from dbml_to_sqlalchemy import createModel
-
     from dbml_to_sqlalchemy import mymodel
 
-    from sqlalchemy import Column, PrimaryKeyConstraint, Integer, UniqueConstraint, ForeignKeyConstraint
-
-    from sqlalchemy.types import String
-    from sqlalchemy.orm import Session
-
     database_file = "sqlite://"
-    engine = db.create_engine(database_file, echo=True)
+    engine = db.create_engine(database_file, echo=False)
     conn = engine.connect()
     metadata = db.MetaData()
 
@@ -92,6 +81,7 @@ for sqlalchemy only
         session.commit()
         mypost = session.scalars(db.select(Post)).all()[0]
         print(mypost.user.name)
+
 
 
 for flask-sqlalchemy

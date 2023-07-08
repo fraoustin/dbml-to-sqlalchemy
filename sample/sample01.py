@@ -1,19 +1,14 @@
 import os
 from re import sub
 import sqlalchemy as db
+from sqlalchemy.orm import Session
 from pydbml import PyDBML
 
 from dbml_to_sqlalchemy import createModel
-
 from dbml_to_sqlalchemy import mymodel
 
-from sqlalchemy import Column, PrimaryKeyConstraint, Integer, UniqueConstraint, ForeignKeyConstraint
-
-from sqlalchemy.types import String
-from sqlalchemy.orm import Session
-
 database_file = "sqlite://"
-engine = db.create_engine(database_file, echo=True)
+engine = db.create_engine(database_file, echo=False)
 conn = engine.connect()
 metadata = db.MetaData()
 
