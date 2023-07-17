@@ -53,6 +53,7 @@ for sqlalchemy only
     Table user {
         id integer [pk, increment, note:'key of user']
         name string [default: 'me', note:'only name']
+        Note: 'Stores user data'
     }
 
     Table post {
@@ -134,3 +135,5 @@ for flask-sqlalchemy
         app.run(host='0.0.0.0', port=5000, debug=True)
 
 ## TODO
+
+manage view from https://github.com/jklukas/sqlalchemy-views (https://stackoverflow.com/questions/9766940/how-to-create-an-sql-view-with-sqlalchemy)

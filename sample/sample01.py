@@ -27,6 +27,7 @@ source = """
 Table user {
     id integer [pk, increment, note:'key of user']
     name string [default: 'me', note:'only name']
+    Note: 'Stores user data'
 }
 
 Table post {

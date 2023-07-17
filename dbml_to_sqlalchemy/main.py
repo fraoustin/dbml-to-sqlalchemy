@@ -93,7 +93,7 @@ def createModel(table, *cls, module=mymodel):
     SomeClass = type(toCamelCase(table.name), cls, {
         "__tablename__": toTableCase(table.name),
         "__table_args__": tuple(tableArgs),
-        "__doc__": "%s\n\n%s" % (table.note, '\n'.join([":param %s %s: %s %s" % (col.name, col.type, col.note, spec_doc(col)) for col in table.columns])),
+        "__doc__": "%s\n\n%s" % (table.note, '\n'.join([":param %s: %s %s\n:type %s: %s" % (col.name, col.note, spec_doc(col), col.name, col.type) for col in table.columns])),
         **cols
     })
     setattr(module, toCamelCase(table.name), SomeClass)
@@ -106,14 +106,14 @@ def createModel(table, *cls, module=mymodel):
             class1.__table_args__ = class1.__table_args__ + (ForeignKeyConstraint([getattr(class1, col.name) for col in ref.col1], [getattr(class2, col.name) for col in ref.col2], name=ref.name), )
         if ref.type == '<':
             setattr(class1, "%ss" % class2.__name__.lower(), relationship(class2.__name__, back_populates=class1.__name__.lower()))
-            class1.__doc__ = class1.__doc__ + "\n:param %ss List(%s):" % (class2.__name__.lower(), class2.__name__)
+            class1.__doc__ = class1.__doc__ + "\n:param %ss:\n:type %ss: relationship(%s)" % (class2.__name__.lower(), class2.__name__.lower(), class2.__name__)
             setattr(class2, class1.__name__.lower(), relationship(class1.__name__, back_populates="%ss" % class2.__name__.lower()))
-            class2.__doc__ = class2.__doc__ + "\n:param %s %s:" % (class1.__name__.lower(), class1.__name__)
+            class2.__doc__ = class2.__doc__ + "\n:param %s :\n:type %s: %s" % (class1.__name__.lower(), class1.__name__.lower(), class1.__name__)
         elif ref.type == '>':
             setattr(class1, class2.__name__.lower(), relationship(class2.__name__, back_populates="%ss" % class1.__name__.lower()))
-            class1.__doc__ = class1.__doc__ + "\n:param %s %s:" % (class2.__name__.lower(), class2.__name__)
+            class1.__doc__ = class1.__doc__ + "\n:param %s:\n:type %s: %s" % (class2.__name__.lower(), class2.__name__.lower(), class2.__name__)
             setattr(class2, "%ss" % class1.__name__.lower(), relationship(class1.__name__, back_populates=class2.__name__.lower()))
-            class2.__doc__ = class2.__doc__ + "\n:param %ss List(%s):" % (class1.__name__.lower(), class1.__name__)
+            class2.__doc__ = class2.__doc__ + "\n:param %ss:\n:type %ss: relationship(%s):" % (class1.__name__.lower(), class1.__name__.lower(), class1.__name__)
         elif ref.type == '-':
             setattr(class1, class2.__name__.lower(), relationship(class2.__name__, uselist=False, back_populates=class1.__name__.lower()))
             setattr(class2, class1.__name__.lower(), relationship(class1.__name__, uselist=False, back_populates=class2.__name__.lower()))
@@ -127,16 +127,16 @@ def createModel(table, *cls, module=mymodel):
             newt.__table_args__ = newt.__table_args__ + (ForeignKeyConstraint([getattr(newt, "%s_%s" % (col.table.name, col.name)) for col in ref.col1], [getattr(class1, col.name) for col in ref.col1]), )
             newt.__table_args__ = newt.__table_args__ + (ForeignKeyConstraint([getattr(newt, "%s_%s" % (col.table.name, col.name)) for col in ref.col2], [getattr(class2, col.name) for col in ref.col2]), )
             setattr(class1, "%ss" % newt.__name__.lower(), relationship(newt.__name__, back_populates=class1.__name__.lower()))
-            class1.__doc__ = class1.__doc__ + "\n:param %ss List(%s):" % (newt.__name__.lower(), newt.__name__)
+            class1.__doc__ = class1.__doc__ + "\n:param %ss:\n:type %ss: relationship(%s)" % (newt.__name__.lower(), newt.__name__.lower(), newt.__name__)
             setattr(newt, class1.__name__.lower(), relationship(class1.__name__, back_populates="%ss" % newt.__name__.lower()))
-            newt.__doc__ = newt.__doc__ + "\n:param %s %s:" % (class1.__name__.lower(), class1.__name__)
+            newt.__doc__ = newt.__doc__ + "\n:param %s:\n:type %s: %s" % (class1.__name__.lower(), class1.__name__.lower(), class1.__name__)
             setattr(class2, "%ss" % newt.__name__.lower(), relationship(newt.__name__, back_populates=class2.__name__.lower()))
-            class2.__doc__ = class2.__doc__ + "\n:param %ss List(%s):" % (newt.__name__.lower(), newt.__name__)
+            class2.__doc__ = class2.__doc__ + "\n:param %ss:\n:type %ss: relationship(%s):" % (newt.__name__.lower(), newt.__name__.lower(), newt.__name__)
             setattr(newt, class2.__name__.lower(), relationship(class2.__name__, back_populates="%ss" % newt.__name__.lower()))
-            newt.__doc__ = newt.__doc__ + "\n:param %s %s:" % (class2.__name__.lower(), class2.__name__)
+            newt.__doc__ = newt.__doc__ + "\n:param %s:\n:type %s: %s:" % (class2.__name__.lower(), class2.__name__.lower(), class2.__name__)
             setattr(class1, "%ss" % class2.__name__.lower(), spec_many("%ss" % newt.__name__.lower(), class2.__name__.lower()))
-            class1.__doc__ = class1.__doc__ + "\n:param %ss List(%s):" % (class2.__name__.lower(), class2.__name__)
+            class1.__doc__ = class1.__doc__ + "\n:param %ss:\n:type %ss: relationship(%s)" % (class2.__name__.lower(), class2.__name__.lower(), class2.__name__)
             setattr(class2, "%ss" % class1.__name__.lower(), spec_many("%ss" % newt.__name__.lower(), class1.__name__.lower()))
-            class2.__doc__ = class2.__doc__ + "\n:param %ss List(%s):" % (class1.__name__.lower(), class1.__name__)
+            class2.__doc__ = class2.__doc__ + "\n:param %ss:\n:type %ss: relationship(%s)" % (class1.__name__.lower(), class1.__name__.lower(), class1.__name__)
             setattr(module, newt.__name__, newt)
     return getattr(module, toCamelCase(table.name))
