@@ -81,7 +81,7 @@ def spec_doc(col):
 def createModel(table, *cls, module=mymodel):
     if len(table.note.text) == 0:
         table.note.text = '%s Table' % toCamelCase(table.name)
-    cols = {col.name: Column(toColumnCase(col.name), getType(col.type)(*getTypeParams(col.type)[0], **getTypeParams(col.type)[1]), primary_key=col.pk, autoincrement=col.autoinc, nullable=not (col.not_null), default=col.default, server_default=getServerDefault(col.default), unique=col.unique) for col in table.columns}
+    cols = {col.name: Column(toColumnCase(col.name), getType(col.type)(*getTypeParams(col.type)[0], **getTypeParams(col.type)[1]), primary_key=col.pk, autoincrement=col.autoinc, nullable=not (col.not_null), default=col.default, server_default=getServerDefault(col.default), unique=col.unique, comment=col.note) for col in table.columns}
     tableArgs = []
     for index in [index for index in table.indexes if index.pk is True]:
         tableArgs.append(PrimaryKeyConstraint(*[cols[col.name] for col in index.subjects]))

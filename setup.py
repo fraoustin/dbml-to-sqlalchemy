@@ -7,7 +7,7 @@
 import os
 from setuptools import setup, find_packages
 
-__version_info__ = (0, 9, 0)
+__version_info__ = (0, 9, 1)
 VERSION = '.'.join([str(val) for val in __version_info__])
 NAME = "dbml-to-sqlalchemy"
 DESC = "dbml-to-sqlalchemy extension for sqlachemy: upload dbml model in orm sqlalchemy"
@@ -39,6 +39,7 @@ setup(
     author_email=AUTHORS_EMAIL,
     description=DESC,
     long_description=LONG_DESC,
+    long_description_content_type='text/markdown',
     include_package_data=True,
     install_requires=REQUIRED,
     url=URLPKG,
