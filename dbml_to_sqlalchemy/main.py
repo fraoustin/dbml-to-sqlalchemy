@@ -35,10 +35,11 @@ def getType(st, default=sqlalchemy.types.String):
     return types.get(st.split('(')[0].lower(), default)
 
 
-def getTypeParams(st):
+def getTypeParams(st, module):
     try:
-        if st.__class__.__name__ == 'Enum':
-            return [enum.Enum(st.name, [item.name for item in st.items]), ], {"create_constraint": True}
+        if st.__class__.__name__ == 'Enum':            
+            setattr(module, st.name, enum.Enum(st.name, [item.name for item in st.items]))
+            return [getattr(module, st.name), ], {"create_constraint": True}
         return [param.isnumeric() and int(param) or param for param in search(r'\((.*)\)', st).group(0)[1:-1].split(',')], {}
     except Exception:
         return [], {}
@@ -81,7 +82,7 @@ def spec_doc(col):
 def createModel(table, *cls, module=mymodel):
     if len(table.note.text) == 0:
         table.note.text = '%s Table' % toCamelCase(table.name)
-    cols = {col.name: Column(toColumnCase(col.name), getType(col.type)(*getTypeParams(col.type)[0], **getTypeParams(col.type)[1]), primary_key=col.pk, autoincrement=col.autoinc, nullable=not (col.not_null), default=col.default, server_default=getServerDefault(col.default), unique=col.unique, comment=col.note) for col in table.columns}
+    cols = {col.name: Column(toColumnCase(col.name), getType(col.type)(*getTypeParams(col.type, module)[0], **getTypeParams(col.type, module)[1]), primary_key=col.pk, autoincrement=col.autoinc, nullable=not (col.not_null), default=col.default, server_default=getServerDefault(col.default), unique=col.unique, comment=col.note) for col in table.columns}
     tableArgs = []
     for index in [index for index in table.indexes if index.pk is True]:
         tableArgs.append(PrimaryKeyConstraint(*[cols[col.name] for col in index.subjects]))

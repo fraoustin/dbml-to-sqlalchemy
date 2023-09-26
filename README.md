@@ -136,4 +136,5 @@ for flask-sqlalchemy
 
 ## TODO
 
-manage view from https://github.com/jklukas/sqlalchemy-views (https://stackoverflow.com/questions/9766940/how-to-create-an-sql-view-with-sqlalchemy)
+- manage view from https://github.com/jklukas/sqlalchemy-views (https://stackoverflow.com/questions/9766940/how-to-create-an-sql-view-with-sqlalchemy)
+- voir la gestion des defaults

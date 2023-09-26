@@ -1,1 +1,2 @@
 SQLAlchemy>=1.3.0
+pydbml>=1.0.9
